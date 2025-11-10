@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:football_shop/widgets/left_drawer.dart';
+import 'package:football_shop/widgets/product_card.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -8,23 +10,25 @@ class MyHomePage extends StatelessWidget {
   final String kelas = "A";
 
   final List<ItemHomepage> items = [
-    ItemHomepage("All Products", Icons.store),
-    ItemHomepage("My Products", Icons.person),
-    ItemHomepage("Create Product", Icons.add_box),
+    ItemHomepage("All Products", Icons.inventory, Colors.blue),
+    ItemHomepage("My Products", Icons.person, Colors.green),
+    ItemHomepage("Create Product", Icons.add, Colors.red),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Football Shop',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        backgroundColor: cs.primary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
+      drawer: const LeftDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -45,13 +49,15 @@ class MyHomePage extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(top: 16.0),
                     child: Text(
-                      'Selamat datang di Football Shop',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                      'Welcome to Football Shop',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18.0,
+                      ),
                     ),
                   ),
                   GridView.count(
-                    primary: false,
+                    primary: true,
                     padding: const EdgeInsets.all(20),
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
@@ -86,62 +92,13 @@ class InfoCard extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8.0),
             Text(content),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class ItemHomepage {
-  final String name;
-  final IconData icon;
-
-  ItemHomepage(this.name, this.icon);
-}
-
-class ItemCard extends StatelessWidget {
-  final ItemHomepage item;
-  const ItemCard(this.item, {super.key});
-
-  Color _bgColorForName(String name) {
-    if (name == "All Products") return Colors.blue;
-    if (name == "My Products") return Colors.green;
-    if (name == "Create Product") return Colors.red;
-    return Colors.grey;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final bg = _bgColorForName(item.name);
-
-    return Material(
-      color: bg,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: () {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(content: Text("Kamu telah menekan tombol ${item.name}!")),
-            );
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(item.icon, color: Colors.white, size: 30.0),
-                const SizedBox(height: 6),
-                Text(item.name, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white)),
-              ],
-            ),
-          ),
         ),
       ),
     );
