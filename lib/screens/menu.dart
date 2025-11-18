@@ -10,9 +10,9 @@ class MyHomePage extends StatelessWidget {
   final String kelas = "A";
 
   final List<ItemHomepage> items = [
-    ItemHomepage("All Products", Icons.inventory, Colors.blue),
-    ItemHomepage("My Products", Icons.person, Colors.green),
-    ItemHomepage("Create Product", Icons.add, Colors.red),
+    ItemHomepage("All Products", Icons.inventory, Colors.pink[700]!),
+    ItemHomepage("My Products", Icons.person, Colors.pink[700]!),
+    ItemHomepage("Create Product", Icons.add, Colors.pink[700]!),
   ];
 
   @override
@@ -20,7 +20,7 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Football Shop',
+          'Socceria',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -49,7 +49,7 @@ class MyHomePage extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(top: 16.0),
                     child: Text(
-                      'Welcome to Football Shop',
+                      'Welcome to Socceria',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18.0,

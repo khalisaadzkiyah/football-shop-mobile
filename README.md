@@ -126,3 +126,90 @@ Warna tema disesuaikan di file main.dart untuk memberikan identitas visual yang 
 - Di LeftDrawer, DrawerHeader diberi warna Colors.indigo (biru tua) untuk memberikan kontras dan kesan profesional.
 - Di ProductFormPage, tombol "Simpan" diberi warna Colors.indigo untuk menyorot aksi utama pada halaman form.
 - Di ItemCard (product_card.dart), item menu diberi warna berbeda (Colors.blue, Colors.green, Colors.red) untuk membedakan fungsi (All Products, My Products, Create Product) sambil tetap menjaga latar belakang dan tekstur Material Design.
+
+Tugas 9
+
+1. Jelaskan mengapa kita perlu membuat model Dart saat mengambil/mengirim data JSON? Apa konsekuensinya jika langsung memetakan Map<String, dynamic> tanpa model (terkait validasi tipe, null-safety, maintainability)?
+
+Kita perlu membuat model Dart untuk merepresentasikan struktur data JSON karena:
+- Validasi tipe: Setiap field pada JSON dipetakan ke tipe Dart yang sesuai (String, int, bool, dll.). Ini membantu mencegah error runtime ketika data tidak sesuai tipe.
+- Null-safety: Model memungkinkan kita menentukan field yang nullable atau required, sehingga lebih aman saat mengakses data.
+- Maintainability: Dengan model, kode lebih mudah dibaca, di-maintain, dan di-refactor dibanding langsung menggunakan Map<String, dynamic> yang rentan typo atau salah akses key.
+
+Konsekuensi jika langsung menggunakan Map<String, dynamic>:
+- Tidak ada validasi tipe otomatis -> mudah terjadi runtime error.
+- Null-safety sulit diterapkan -> sering harus cek null manual.
+- Kode menjadi kurang jelas -> developer lain sulit memahami struktur data.
+
+2. Apa fungsi package http dan CookieRequest dalam tugas ini? Jelaskan perbedaan peran http vs CookieRequest.
+
+- http: Digunakan untuk melakukan request HTTP standar (GET, POST, PUT, DELETE) ke backend Django, tapi tidak otomatis menangani cookie/session. Cocok untuk request stateless.
+- CookieRequest: Mempermudah komunikasi dengan backend Django yang menggunakan session/cookie untuk autentikasi. Secara otomatis menyimpan dan mengirim cookie saat login, sehingga kita bisa tetap logged-in di berbagai request.
+
+Perbedaan utama:
+- http -> stateless, harus kelola cookie manual jika ingin autentikasi.
+- CookieRequest -> stateful, otomatis menyimpan cookie, lebih cocok untuk aplikasi dengan login session.
+
+3. Jelaskan mengapa instance CookieRequest perlu untuk dibagikan ke semua komponen di aplikasi Flutter.
+
+- Instance CookieRequest menyimpan state login dan cookie session.
+- Dengan membagikannya (misal melalui Provider), semua widget di aplikasi bisa mengakses status login dan melakukan request ke backend tanpa membuat instance baru.
+- Menghindari duplikasi dan inkonsistensi data session di berbagai halaman.
+
+4. Jelaskan konfigurasi konektivitas yang diperlukan agar Flutter dapat berkomunikasi dengan Django. Mengapa kita perlu menambahkan 10.0.2.2 pada ALLOWED_HOSTS, mengaktifkan CORS dan pengaturan SameSite/cookie, dan menambahkan izin akses internet di Android? Apa yang akan terjadi jika konfigurasi tersebut tidak dilakukan dengan benar?
+
+Agar Flutter bisa berkomunikasi dengan Django, diperlukan beberapa konfigurasi:
+- 10.0.2.2 di ALLOWED_HOSTS
+Saat menggunakan Android Emulator, localhost merujuk ke emulator, bukan komputer host.
+10.0.2.2 menunjuk ke host PC dari emulator. Tanpa ini, request akan ditolak Django.
+- Aktifkan CORS (Cross-Origin Resource Sharing)
+Agar aplikasi Flutter (di browser atau emulator) bisa mengakses API Django tanpa ditolak karena policy origin berbeda.
+- Pengaturan SameSite/Cookie
+Agar cookie session bisa dikirim dari Flutter ke backend secara aman, terutama di Web dan emulator.
+- Izin Internet di AndroidManifest.xml
+Dibutuhkan untuk Flutter mobile agar bisa mengakses internet.
+
+Jika konfigurasi ini tidak dilakukan:
+- Request ke backend akan gagal (403, 404, atau CORS error).
+- Login dan fetch data tidak berjalan.
+
+5.  Jelaskan mekanisme pengiriman data mulai dari input hingga dapat ditampilkan pada Flutter.
+
+- User mengisi form di Flutter (misal nama produk, harga).
+- Flutter memvalidasi input (required, tipe data, format URL).
+- Flutter mengirim data ke backend Django menggunakan CookieRequest.postJson().
+- Django menerima JSON, memproses, menyimpan di database, dan mengembalikan response JSON.
+- Flutter menerima response dan menampilkan notifikasi/success message.
+- Jika berhasil, halaman Flutter bisa update otomatis menampilkan data baru (misal list produk).
+
+6. Jelaskan mekanisme autentikasi dari login, register, hingga logout. Mulai dari input data akun pada Flutter ke Django hingga selesainya proses autentikasi oleh Django dan tampilnya menu pada Flutter.
+
+Register:
+- User input username & password di Flutter.
+- Flutter kirim data ke endpoint Django /auth/register/.
+- Django validasi data, buat akun baru, dan return status.
+- Flutter menampilkan notifikasi berhasil/failed.
+
+Login:
+- User input username & password di Flutter.
+- Flutter kirim request ke /auth/login/ menggunakan CookieRequest.
+- Django cek kredensial, set session cookie, dan return username + message.
+- Flutter menyimpan session cookie otomatis melalui CookieRequest.
+- User dialihkan ke halaman utama (MyHomePage).
+
+Logout:
+- Flutter memanggil endpoint /auth/logout/.
+- Django menghapus session, cookie invalidated.
+- Flutter kembali ke halaman login, session hilang.
+
+7. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step! (bukan hanya sekadar mengikuti tutorial).
+
+- Membuat model Dart untuk tiap data JSON (Product, User).
+- Membuat UI sesuai tema Socceria (pink pastel, pink tua, dark pink/purple).
+- Membuat halaman login & register menggunakan CookieRequest.
+- Membuat halaman CRUD produk dengan validasi form.
+- Membuat drawer & navigasi untuk mempermudah user berpindah halaman.
+- Menambahkan FutureBuilder & ListView untuk menampilkan list produk dari API.
+- Testing koneksi antara Flutter dan Django (emulator + browser + Android).
+- Memastikan state login konsisten di semua halaman dengan Provider<CookieRequest>.
+- Memastikan semua warna, teks, dan tema konsisten di seluruh aplikasi.
